@@ -48,3 +48,12 @@
 @media(max-width:880px){.plan-preview{grid-template-columns:repeat(2,minmax(0,1fr))}.account-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.account-main{padding-top:36px;padding-bottom:60px}.account-panel{padding:20px}.account-stats{grid-template-columns:1fr}.plan-preview{grid-template-columns:1fr 1fr}.account-top{align-items:flex-start}.account-top h2{font-size:27px}.account-tag{font-size:9px}.account-stat{padding:16px}}
 @media(max-width:380px){.plan-preview{grid-template-columns:1fr}.account-panel-head{align-items:flex-start}}
+
+/* Early-access, verified device linking */
+.device-claim{margin-top:19px;padding-top:19px;border-top:1px solid rgba(255,255,255,.12)}
+.device-claim h4{font-family:'Manrope',sans-serif;font-size:17px;margin:0 0 8px}
+.device-claim p.account-muted{font-size:13px;line-height:1.65}
+.device-claim .account-form{gap:12px;margin-top:17px}
+.device-claim input{text-transform:none}
+.device-claim #claimVirtualMac{text-transform:uppercase;letter-spacing:.06em}
+.device-claim .account-primary{width:100%}
