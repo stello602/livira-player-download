@@ -7,6 +7,12 @@
 <title>My Account — LIVIRA Player</title>
 <link rel="stylesheet" href="/account.css">
 <script defer src="/app.js"></script><script type="module" src="/account.js"></script>
+<style>
+.password-field{position:relative;display:block}
+.password-field input{width:100%;padding-right:56px!important}
+.password-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;color:#a5e6e4;border:0;border-radius:9px;cursor:pointer}
+.password-eye:hover,.password-eye:focus-visible{background:rgba(115,222,210,.12);color:#e6fffe}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -27,7 +33,7 @@
 <form id="authForm" class="account-form">
 <label id="nameWrap" hidden>Display name <input id="nameInput" type="text" autocomplete="name" maxlength="100" placeholder="How should we address you?"></label>
 <label>Email address <input id="emailInput" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></label>
-<label>Password <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="Your password"></label>
+<label>Password <span class="password-field"><input id="passwordInput" type="password" autocomplete="current-password" required placeholder="Your password"><button class="password-eye" type="button" data-password-toggle="passwordInput" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
 <button id="authSubmit" type="submit" class="account-primary">Sign in</button>
 </form>
 <div class="account-actions"><button type="button" class="text-button" id="forgotPassword">Forgot password?</button></div>
@@ -37,7 +43,7 @@
 
 <section class="account-panel" id="resetPanel" hidden aria-labelledby="resetHeading">
 <h2 id="resetHeading">Choose a new password</h2><p class="account-muted">Create a strong password for your LIVIRA account.</p>
-<form class="account-form" id="resetForm"><label>New password <input type="password" id="newPassword" minlength="8" required autocomplete="new-password"></label><label>Confirm new password <input type="password" id="confirmPassword" minlength="8" required autocomplete="new-password"></label><button type="submit" class="account-primary">Update password</button></form><div class="account-actions"><button type="button" class="text-button" id="cancelReset">Return to dashboard</button></div>
+<form class="account-form" id="resetForm"><label>New password <span class="password-field"><input type="password" id="newPassword" minlength="8" required autocomplete="new-password"><button class="password-eye" type="button" data-password-toggle="newPassword" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label><label>Confirm new password <span class="password-field"><input type="password" id="confirmPassword" minlength="8" required autocomplete="new-password"><button class="password-eye" type="button" data-password-toggle="confirmPassword" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label><button type="submit" class="account-primary">Update password</button></form><div class="account-actions"><button type="button" class="text-button" id="cancelReset">Return to dashboard</button></div>
 <p id="resetStatus" class="account-status" role="status" aria-live="polite"></p>
 </section>
 
@@ -55,7 +61,7 @@
 <form id="deviceClaimForm" class="account-form">
 <label>Device nickname <input id="claimNickname" type="text" maxlength="80" placeholder="Living room Fire TV" autocomplete="off"></label>
 <label>Virtual MAC <input id="claimVirtualMac" type="text" maxlength="17" required placeholder="02:AB:CD:EF:12:34" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
-<label>Device Key <input id="claimDeviceKey" type="password" maxlength="12" minlength="8" required placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+<label>Device Key <span class="password-field"><input id="claimDeviceKey" type="password" maxlength="12" minlength="8" required placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="password-eye" type="button" data-password-toggle="claimDeviceKey" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
 <button type="submit" class="account-primary small-button" id="deviceClaimSubmit">Verify and link device</button>
 </form><p id="deviceClaimStatus" class="account-status" role="status" aria-live="polite"></p></div>
 <p class="account-hint">Early-access accounts can link one device until paid license plans are enabled. Removing and transferring devices will follow later. Linking does not change your playlist or player installation.</p></section>
@@ -65,4 +71,18 @@
 </section>
 </main>
 <footer class="footer"><div class="container footer-inner"><div><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><span>▶</span></span><span class="brand-type">LIVIRA<span>PLAYER</span></span></a><p>Your World. One Player.<br>A software product by FEDFOMA LLC.</p></div><div class="footer-links"><a href="/">Home</a><a href="/#plans">Plans</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div><div class="container bottomline"><span>© <span id="year">2026</span> FEDFOMA LLC.</span><span>Media player only. Bring your own authorized content.</span></div></footer>
+<script>
+document.addEventListener('click',function(event){
+  const button=event.target.closest('[data-password-toggle]');
+  if(!button)return;
+  const input=document.getElementById(button.dataset.passwordToggle);
+  if(!input)return;
+  const visible=input.type==='password';
+  input.type=visible?'text':'password';
+  button.setAttribute('aria-label',visible?'Hide password':'Show password');
+  button.setAttribute('title',visible?'Hide password':'Show password');
+  button.setAttribute('aria-pressed',String(visible));
+  button.style.color=visible?'#fff':'';
+});
+</script>
 </body></html>
