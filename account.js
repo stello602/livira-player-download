@@ -1,13 +1,17 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 // This is the *public publishable* key only. Never place the service-role key in browser code.
+// Capture an incoming recovery marker before the auth library handles and clears callback tokens.
+const recoveryHash = new URLSearchParams(location.hash.replace(/^#/, ''));
+const recoveryQuery = new URLSearchParams(location.search);
+const openedRecoveryLink = recoveryHash.get('type') === 'recovery' || recoveryQuery.get('type') === 'recovery';
 const supabase = createClient('https://rncdhwoqslcurvetbhoz.supabase.co', 'sb_publishable_CjI-Hya9NC7_jd6pMpVkGg_VbcbXP-N', {
   auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
 });
 const $ = id => document.getElementById(id);
 const panels = ['loadingPanel', 'authPanel', 'resetPanel', 'dashboard'];
 let mode = 'signin';
-let recovery = false;
+let recovery = openedRecoveryLink;
 let accountVersion = 0;
 
 function showPanel(id) {
@@ -105,6 +109,11 @@ $('forgotPassword').addEventListener('click', async () => {
 $('resetForm').addEventListener('submit', async event => {
   event.preventDefault();
   const password = $('newPassword').value;
+  const confirmation = $('confirmPassword').value;
+  if (password !== confirmation) {
+    status('resetStatus', 'The two passwords do not match. Please try again.', 'error');
+    return;
+  }
   if (password.length < 8) {
     status('resetStatus', 'Use a password with at least 8 characters.', 'error');
     return;
@@ -115,10 +124,12 @@ $('resetForm').addEventListener('submit', async event => {
     const { error } = await supabase.auth.updateUser({ password });
     if (error) throw error;
     $('newPassword').value = '';
+    $('confirmPassword').value = '';
     recovery = false;
-    status('resetStatus', 'Password updated successfully.', 'ok');
-    const { data } = await supabase.auth.getSession();
+    const { data, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
     await renderAccount(data.session);
+    status('dashboardStatus', 'Password updated successfully.', 'ok');
   } catch (error) {
     status('resetStatus', errorMessage(error), 'error');
   } finally {
@@ -126,6 +137,22 @@ $('resetForm').addEventListener('submit', async event => {
   }
 });
 
+$('changePassword').addEventListener('click', () => {
+  recovery = true;
+  accountVersion++;
+  status('resetStatus', '');
+  showPanel('resetPanel');
+});
+$('cancelReset').addEventListener('click', async () => {
+  recovery = false;
+  const { data, error } = await supabase.auth.getSession();
+  if (error || !data.session) {
+    showPanel('authPanel');
+    status('authStatus', 'Please sign in to continue.', 'error');
+    return;
+  }
+  await renderAccount(data.session);
+});
 $('signOut').addEventListener('click', async () => {
   try {
     const { error } = await supabase.auth.signOut();
@@ -216,7 +243,10 @@ async function renderAccount(session) {
         .eq('is_public', true)
         .order('annual_price_cents', { ascending: true })
     ]);
-    if (version !== accountVersion) return;
+    if (version !== accountVersion || recovery) {
+      if (recovery) showPanel('resetPanel');
+      return;
+    }
     if (subscriptionsResult.error) throw subscriptionsResult.error;
     if (devicesResult.error) throw devicesResult.error;
     if (plansResult.error) throw plansResult.error;
@@ -281,6 +311,7 @@ async function renderAccount(session) {
 supabase.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
     recovery = true;
+    accountVersion++; // invalidate dashboard requests already in flight
     showPanel('resetPanel');
     return;
   }
