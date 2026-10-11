@@ -121,6 +121,10 @@ $('resetForm').addEventListener('submit', async event => {
   const button = $('resetForm').querySelector('button');
   button.disabled = true;
   try {
+    const { data: verifiedSession, error: sessionCheckError } = await supabase.auth.getSession();
+    if (sessionCheckError || !verifiedSession.session) {
+      throw new Error('The reset link did not establish a valid session. Please request a fresh reset link and open it in Safari.');
+    }
     const { error } = await supabase.auth.updateUser({ password });
     if (error) throw error;
     $('newPassword').value = '';
