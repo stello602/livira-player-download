@@ -17,7 +17,7 @@
 <nav class="site-nav" id="primary-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/#features">Features</a><a href="/#plans">Plans</a><a class="nav-cta" href="/#download">Get LIVIRA ↗</a></nav>
 </div></header>
 <main id="main" class="account-main container">
-<div class="account-intro"><div class="kicker">LIVIRA CUSTOMER PORTAL · EARLY ACCESS</div><h1>Your screens.<br><em>Your account.</em></h1><p>Sign in to view your account, future device licenses, and subscription information. Payments and device activation are not available during this preview.</p></div>
+<div class="account-intro"><div class="kicker">LIVIRA CUSTOMER PORTAL · EARLY ACCESS</div><h1>Your screens.<br><em>Your account.</em></h1><p>Sign in to view your account, future device licenses, and subscription information. Payments are not available during this preview. Signed-in customers can securely link one verified device while we test licensing.</p></div>
 
 <section class="account-panel" id="loadingPanel" aria-live="polite"><p>Connecting securely to LIVIRA…</p></section>
 
@@ -50,7 +50,15 @@
 </div>
 <div class="account-grid">
 <section class="account-panel"><div class="account-panel-head"><h3>My profile</h3><span class="account-tag">PRIVATE</span></div><form id="profileForm" class="account-form"><label>Display name <input id="profileName" type="text" maxlength="100" autocomplete="name" placeholder="Your name"></label><label>Email <input id="profileEmail" type="email" disabled></label><button type="submit" class="account-primary small-button">Save profile</button></form><div class="account-actions" style="text-align:left"><button type="button" class="text-button" id="changePassword">Set / change password</button></div><p id="profileStatus" class="account-status" role="status" aria-live="polite"></p></section>
-<section class="account-panel"><div class="account-panel-head"><h3>My devices</h3><span class="account-tag">SECURE</span></div><div id="deviceList" class="device-list"><p class="account-muted">Checking registered devices…</p></div><p class="account-hint">Device activation and removal will be enabled after identity verification and license-limit testing. Your existing LIVIRA playlist is not affected.</p></section>
+<section class="account-panel"><div class="account-panel-head"><h3>My devices</h3><span class="account-tag">SECURE</span></div><div id="deviceList" class="device-list"><p class="account-muted">Checking registered devices…</p></div>
+<div class="device-claim"><h4>Link a LIVIRA device</h4><p class="account-muted">On your television, open <strong>LIVIRA → Settings → Device Info</strong>. Enter its Virtual MAC and short Device Key here. Do not share your key in messages or screenshots.</p>
+<form id="deviceClaimForm" class="account-form">
+<label>Device nickname <input id="claimNickname" type="text" maxlength="80" placeholder="Living room Fire TV" autocomplete="off"></label>
+<label>Virtual MAC <input id="claimVirtualMac" type="text" maxlength="17" required placeholder="02:AB:CD:EF:12:34" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+<label>Device Key <input id="claimDeviceKey" type="password" maxlength="12" minlength="8" required placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+<button type="submit" class="account-primary small-button" id="deviceClaimSubmit">Verify and link device</button>
+</form><p id="deviceClaimStatus" class="account-status" role="status" aria-live="polite"></p></div>
+<p class="account-hint">Early-access accounts can link one device until paid license plans are enabled. Removing and transferring devices will follow later. Linking does not change your playlist or player installation.</p></section>
 </div>
 <section class="account-panel available-plans"><div class="account-panel-head"><div><h3>Available plans</h3><p class="account-muted">Illustrative prices while checkout is in development.</p></div><span class="account-tag">PREVIEW</span></div><div id="plansGrid" class="plan-preview"><p class="account-muted">Loading plans…</p></div><p class="account-hint">Purchasing is disabled. LIVIRA software plans never include TV channels or IPTV service subscriptions.</p></section>
 <p id="dashboardStatus" class="account-status" role="status" aria-live="polite"></p>
