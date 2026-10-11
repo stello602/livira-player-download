@@ -153,6 +153,38 @@ $('cancelReset').addEventListener('click', async () => {
   }
   await renderAccount(data.session);
 });
+$('deviceClaimForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = $('deviceClaimSubmit');
+  const virtualMac = $('claimVirtualMac').value.trim().toUpperCase();
+  const shortKey = $('claimDeviceKey').value.trim().toUpperCase();
+  const nickname = $('claimNickname').value.trim();
+  button.disabled = true;
+  status('deviceClaimStatus', 'Verifying your device securely…');
+  try {
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (authError || !authData.user) throw authError || new Error('Please sign in again.');
+    const { data, error } = await supabase.rpc('livira_claim_customer_device', {
+      p_virtual_mac: virtualMac,
+      p_short_key: shortKey,
+      p_nickname: nickname || null
+    });
+    if (error) throw error;
+    if (!data?.linked) throw new Error('We could not complete device linking. Please try again.');
+    $('claimDeviceKey').value = '';
+    await renderAccount((await supabase.auth.getSession()).data.session);
+    status('deviceClaimStatus', data.alreadyLinked
+      ? 'This device is already linked to your account.'
+      : 'Device linked successfully. Your TV playlist remains unchanged.', 'ok');
+  } catch (error) {
+    // Clear the secret after every attempt; customers can re-enter it if needed.
+    $('claimDeviceKey').value = '';
+    status('deviceClaimStatus', errorMessage(error), 'error');
+  } finally {
+    button.disabled = false;
+  }
+});
+
 $('signOut').addEventListener('click', async () => {
   try {
     const { error } = await supabase.auth.signOut();
@@ -263,8 +295,8 @@ async function renderAccount(session) {
     $('planStatus').textContent = subscription ? subscription.status : 'Free-launch preview';
     $('deviceUsage').textContent = devices.length + (devices.length === 1 ? ' device' : ' devices');
     $('deviceLimit').textContent = subscription && licensedPlan
-      ? 'Plan allowance: up to ' + licensedPlan.max_devices + ' (enforcement pending)'
-      : 'Device activation coming soon';
+      ? 'Plan allowance: up to ' + licensedPlan.max_devices + ' devices'
+      : 'Early access: 1 linked device';
     $('renewalDate').textContent = subscription?.expires_at ? formatDay(subscription.expires_at) : 'Not scheduled';
     const list = $('deviceList');
     list.replaceChildren();
