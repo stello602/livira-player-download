@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071622"><meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Secure LIVIRA Player customer account and device plan dashboard.">
+<title>My Account — LIVIRA Player</title>
+<link rel="stylesheet" href="/account.css">
+<script defer src="/app.js"></script><script type="module" src="/account.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+<header class="site-header"><div class="container nav-wrap">
+<a class="brand" href="/" aria-label="LIVIRA Player home"><span class="brand-mark" aria-hidden="true"><span>▶</span></span><span class="brand-type">LIVIRA<span>PLAYER</span></span></a>
+<button class="mobile-menu" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">☰</button>
+<nav class="site-nav" id="primary-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/#features">Features</a><a href="/#plans">Plans</a><a class="nav-cta" href="/#download">Get LIVIRA ↗</a></nav>
+</div></header>
+<main id="main" class="account-main container">
+<div class="account-intro"><div class="kicker">LIVIRA CUSTOMER PORTAL · EARLY ACCESS</div><h1>Your screens.<br><em>Your account.</em></h1><p>Sign in to view your account, future device licenses, and subscription information. Payments and device activation are not available during this preview.</p></div>
+
+<section class="account-panel" id="loadingPanel" aria-live="polite"><p>Connecting securely to LIVIRA…</p></section>
+
+<section class="account-panel" id="authPanel" hidden aria-labelledby="authHeading">
+<div class="account-tabs" role="group" aria-label="Account action"><button type="button" class="selected" id="signInTab" aria-pressed="true">Sign in</button><button type="button" id="signUpTab" aria-pressed="false">Create account</button></div>
+<h2 id="authHeading">Welcome back</h2><p id="authExplainer" class="account-muted">Sign in with your LIVIRA account email and password.</p>
+<form id="authForm" class="account-form">
+<label id="nameWrap" hidden>Display name <input id="nameInput" type="text" autocomplete="name" maxlength="100" placeholder="How should we address you?"></label>
+<label>Email address <input id="emailInput" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></label>
+<label>Password <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="Your password"></label>
+<button id="authSubmit" type="submit" class="account-primary">Sign in</button>
+</form>
+<div class="account-actions"><button type="button" class="text-button" id="forgotPassword">Forgot password?</button></div>
+<p id="authStatus" class="account-status" role="status" aria-live="polite"></p>
+<div class="account-note">Customer accounts are separate from IPTV playlist credentials. LIVIRA does not provide television channels or content subscriptions.</div>
+</section>
+
+<section class="account-panel" id="resetPanel" hidden aria-labelledby="resetHeading">
+<h2 id="resetHeading">Choose a new password</h2><p class="account-muted">Create a strong password for your LIVIRA account.</p>
+<form class="account-form" id="resetForm"><label>New password <input type="password" id="newPassword" minlength="8" required autocomplete="new-password"></label><button type="submit" class="account-primary">Update password</button></form>
+<p id="resetStatus" class="account-status" role="status" aria-live="polite"></p>
+</section>
+
+<section id="dashboard" hidden aria-label="Customer dashboard">
+<div class="account-top"><div><div class="kicker">ACCOUNT OVERVIEW</div><h2>Welcome to LIVIRA</h2><p class="account-muted" id="accountEmail"></p></div><button type="button" class="outline-button" id="signOut">Sign out</button></div>
+<div class="account-stats">
+<article class="account-stat"><span>Current plan</span><strong id="currentPlan">No active plan</strong><small id="planStatus">Free-launch preview</small></article>
+<article class="account-stat"><span>Activated devices</span><strong id="deviceUsage">0 devices</strong><small id="deviceLimit">Device activation coming soon</small></article>
+<article class="account-stat"><span>Next renewal</span><strong id="renewalDate">Not scheduled</strong><small>Payments are not enabled</small></article>
+</div>
+<div class="account-grid">
+<section class="account-panel"><div class="account-panel-head"><h3>My profile</h3><span class="account-tag">PRIVATE</span></div><form id="profileForm" class="account-form"><label>Display name <input id="profileName" type="text" maxlength="100" autocomplete="name" placeholder="Your name"></label><label>Email <input id="profileEmail" type="email" disabled></label><button type="submit" class="account-primary small-button">Save profile</button></form><p id="profileStatus" class="account-status" role="status" aria-live="polite"></p></section>
+<section class="account-panel"><div class="account-panel-head"><h3>My devices</h3><span class="account-tag">SECURE</span></div><div id="deviceList" class="device-list"><p class="account-muted">Checking registered devices…</p></div><p class="account-hint">Device activation and removal will be enabled after identity verification and license-limit testing. Your existing LIVIRA playlist is not affected.</p></section>
+</div>
+<section class="account-panel available-plans"><div class="account-panel-head"><div><h3>Available plans</h3><p class="account-muted">Illustrative prices while checkout is in development.</p></div><span class="account-tag">PREVIEW</span></div><div id="plansGrid" class="plan-preview"><p class="account-muted">Loading plans…</p></div><p class="account-hint">Purchasing is disabled. LIVIRA software plans never include TV channels or IPTV service subscriptions.</p></section>
+<p id="dashboardStatus" class="account-status" role="status" aria-live="polite"></p>
+</section>
+</main>
+<footer class="footer"><div class="container footer-inner"><div><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><span>▶</span></span><span class="brand-type">LIVIRA<span>PLAYER</span></span></a><p>Your World. One Player.<br>A software product by FEDFOMA LLC.</p></div><div class="footer-links"><a href="/">Home</a><a href="/#plans">Plans</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div><div class="container bottomline"><span>© <span id="year">2026</span> FEDFOMA LLC.</span><span>Media player only. Bring your own authorized content.</span></div></footer>
+</body></html>
