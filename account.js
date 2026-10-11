@@ -149,7 +149,7 @@ async function ensureProfile(user) {
     const displayName = typeof user.user_metadata?.display_name === 'string'
       ? user.user_metadata.display_name.slice(0, 100) : null;
     const created = await supabase.from('livira_customer_accounts')
-      .insert({ id: user.id, display_name }).select('id,display_name').single();
+      .insert({ id: user.id, display_name: displayName }).select('id,display_name').single();
     if (created.error) {
       // A second signed-in tab may have created the same profile.
       const retried = await supabase.from('livira_customer_accounts')
