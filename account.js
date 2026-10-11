@@ -5,6 +5,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const recoveryHash = new URLSearchParams(location.hash.replace(/^#/, ''));
 const recoveryQuery = new URLSearchParams(location.search);
 const openedRecoveryLink = recoveryHash.get('type') === 'recovery' || recoveryQuery.get('type') === 'recovery';
+// Keep recovery emails on the already-approved authentication callback.
+const authEmailCallback = 'https://livira-site.vercel.app/account.html';
 const supabase = createClient('https://rncdhwoqslcurvetbhoz.supabase.co', 'sb_publishable_CjI-Hya9NC7_jd6pMpVkGg_VbcbXP-N', {
   auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
 });
@@ -62,7 +64,7 @@ $('authForm').addEventListener('submit', async event => {
         email,
         password,
         options: {
-          emailRedirectTo: new URL('/account.html', location.origin).href,
+          emailRedirectTo: authEmailCallback,
           data: { display_name: displayName }
         }
       });
@@ -97,7 +99,7 @@ $('forgotPassword').addEventListener('click', async () => {
   try {
     status('authStatus', 'Sending password reset instructions…');
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: new URL('/account.html', location.origin).href
+      redirectTo: authEmailCallback
     });
     if (error) throw error;
     status('authStatus', 'If this email belongs to a LIVIRA account, password reset instructions will be sent. Check your inbox and spam folder.', 'ok');
@@ -361,10 +363,47 @@ supabase.auth.onAuthStateChange((event, session) => {
     setTimeout(() => { renderAccount(session); }, 0);
   }
 });
-const { data, error } = await supabase.auth.getSession();
-if (error) {
+// Recovery links can open in a separate Safari context. If the auth SDK has
+// not established the session automatically, process only supported callbacks.
+async function resumeRecoverySession() {
+  const current = await supabase.auth.getSession();
+  if (current.data?.session) return current.data.session;
+  if (!openedRecoveryLink) return null;
+  const accessToken = recoveryHash.get('access_token');
+  const refreshToken = recoveryHash.get('refresh_token');
+  if (accessToken && refreshToken) {
+    const established = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken
+    });
+    if (established.error) throw established.error;
+    history.replaceState(null, '', location.pathname);
+    return established.data.session;
+  }
+  const code = recoveryQuery.get('code');
+  if (code) {
+    const exchanged = await supabase.auth.exchangeCodeForSession(code);
+    if (exchanged.error) throw exchanged.error;
+    history.replaceState(null, '', location.pathname);
+    return exchanged.data.session;
+  }
+  return null;
+}
+try {
+  let { data, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  if (openedRecoveryLink && !data.session) {
+    data = { session: await resumeRecoverySession() };
+  }
+  if (recovery && !data.session) {
+    recovery = false;
+    showPanel('authPanel');
+    status('authStatus', 'This reset link did not establish a session. Please request a fresh password-reset email and open its newest link in Safari.', 'error');
+  } else {
+    await renderAccount(data.session);
+  }
+} catch (error) {
+  recovery = false;
   showPanel('authPanel');
-  status('authStatus', errorMessage(error), 'error');
-} else {
-  await renderAccount(data.session);
+  status('authStatus', 'Password recovery could not be completed: ' + errorMessage(error), 'error');
 }
